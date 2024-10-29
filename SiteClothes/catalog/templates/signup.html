@@ -1,0 +1,57 @@
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloseStyle</title>
+    <link rel="shortcut icon" href="{% static 'image/logo1.png' %}" type="image/x-icon">
+</head>
+<body>
+{% block content %}
+    <header class="header">
+        <div class="index-div">
+            <ul class="index-div-list">
+                <li><a href="/"><img src="{% static 'image/logo2.png' %}" alt="" class="index-div-logo"></a></li>
+                <li class="index-div-list-item"><a href="/products/" class="index-div-list-item-text">Каталог</a></li>
+                <li class="index-div-list-item"><a href="" class="index-div-list-item-text">Новинки и акции</a></li>
+                <li class="index-div-list-item"><a href="/news/" class="index-div-list-item-text">Новости магазина</a></li>
+                <li class="index-div-list-item"><a href="/contacts/" class="index-div-list-item-text">Контактная информация</a></li>
+                <div class="buy-profil">
+                    <li><a href="/cart/"><img src="{% static 'image/buy.png' %}" alt="" class="index-div-profil"></a></li>
+                    <li><a href="{% url 'login' %}"><img src="{% static 'image/profil.png' %}" alt="" class="index-div-profil"></a></li>
+                </div>
+            </ul>
+        </div>
+    </header>
+<section class="section section-profil">
+     <div class="div-profil">
+            <h2 class="div-profil-title">Зарегистрироваться</h2>
+            <form method="post" class="div-profil-form">
+                {% csrf_token %}
+                <div class="div-profil-form-element">
+                    <label for="id_username" class="div-profil-form-element-label">Логин:</label>
+                    <input id="id_username" class="div-profil-form-element-input1" name="username" type="text" placeholder="Введите логин"/>
+                </div>
+                {% for error in form.username.errors %}
+                    <p style="color: red;">Логин занят</p>
+                {% endfor %}
+                <div class="div-profil-form-element tooltip">
+                    <label for="id_password1" class="div-profil-form-element-label">Пароль:</label>
+                    <input id="id_password1" class="div-profil-form-element-input2" name="password1" type="password" placeholder="Введите пароль"/>
+                    <span class="tooltiptext">Пароль не должен быть похож на логин, быть слишком распространенным или состоять только из цифр. Должен содержать как минимум 8 символов.</span>
+                </div>
+                <div class="div-profil-form-element">
+                    <label for="id_password2" class="div-profil-form-element-label">Пароль:</label>
+                    <input id="id_password2" class="div-profil-form-element-input2" name="password2" type="password" placeholder="Подтвердите пароль"/>
+                </div>
+                {% if form.password2.errors %}
+                    <p style="color: red">Ошибка ввода пароля</p>
+                {% endif %}
+                <button type="submit" class="div-profil-btn1">Регистрация</button>
+                <p class="div-text">Есть аккаунт?<a href="{% url 'login' %}" class="div-profil-btn2"> Войти</a></p>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
+</body>
