@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.timezone import localtime
 
 
 class clothes(models.Model):
@@ -90,21 +93,60 @@ class newss(models.Model):
     def __str__(self):
         return self.name
 
-#
-# class Product(models.Model):
-#     name = models.CharField(max_length=100)
-#     description = models.TextField(null=True)
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-#     image = models.ImageField(upload_to='products/')
-#
-#     def __str__(self):
-#         return self.name
-
 class CartItem(models.Model):
-    product = models.ForeignKey(clothes, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(clothes, on_delete=models.CASCADE, verbose_name="Товар")
+    quantity = models.PositiveIntegerField(default=0, verbose_name="Количество")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     date_added = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзина'
 
     def __str__(self):
         return f'{self.quantity} x {self.product.title}'
+
+
+class Topic(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Заголовок")
+
+    def get_absolute_url(self):
+        return reverse('catalog:topic-detail', kwargs={'pk': self.pk})
+
+    class Meta:
+        verbose_name = 'Заголовок категории форума'
+        verbose_name_plural = 'Заголовок категории форума'
+
+    def __str__(self):
+        return self.title
+
+
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Пользователь")
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, verbose_name="Заголовок")
+    timestamp = models.DateTimeField(default=timezone.now, verbose_name="Время")
+    title = models.CharField(max_length=50, verbose_name="Заголовок поста")
+    body = models.TextField(blank=True, null=True, verbose_name="Текст поста")
+
+    class Meta:
+        verbose_name = 'Пост пользователя'
+        verbose_name_plural = 'Пост пользователя'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('catalog:post-detail', kwargs={'pk': self.pk})
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Пользователь")
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True, verbose_name="Пост")
+    timestamp = models.DateTimeField(default=timezone.now, verbose_name="Время")
+    body = models.TextField(verbose_name="Сообщение")
+
+    class Meta:
+        verbose_name = 'Коментарии под посты'
+        verbose_name_plural = 'Коментарии под посты'
+
+    def __str__(self):
+        return self.body

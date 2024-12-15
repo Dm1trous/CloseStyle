@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import brend, gender, size, cat, clothes, color, material, newss, CartItem
+from .models import clothes, newss, Topic, Comment
 
 
 @admin.register(clothes)
@@ -18,15 +18,9 @@ class ClothesAdmin(admin.ModelAdmin):
 
     image_show.__name__ = "Фото"
 
-admin.site.register(brend)
-admin.site.register(gender)
-admin.site.register(size)
-admin.site.register(cat)
-admin.site.register(color)
-admin.site.register(material)
 admin.site.register(newss)
-admin.site.register(CartItem)
-
+admin.site.register(Topic)
+admin.site.register(Comment)
 
 
 

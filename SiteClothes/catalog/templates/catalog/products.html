@@ -14,12 +14,22 @@
             <ul class="index-div-list">
                 <li><a href="/"><img src="{% static 'image/logo2.png' %}" alt="" class="index-div-logo"></a></li>
                 <li class="index-div-list-item"><a href="/products/" class="index-div-list-item-text">Каталог</a></li>
-                <li class="index-div-list-item"><a href="" class="index-div-list-item-text">Новинки и акции</a></li>
+                <li class="index-div-list-item"><a href="/forum/" class="index-div-list-item-text">Форум</a></li>
                 <li class="index-div-list-item"><a href="/news/" class="index-div-list-item-text">Новости магазина</a></li>
                 <li class="index-div-list-item"><a href="/contacts/" class="index-div-list-item-text">Контактная информация</a></li>
                 <div class="buy-profil">
+                    {% if user.is_authenticated %}
                     <li><a href="/cart/"><img src="{% static 'image/buy.png' %}" alt="" class="index-div-profil"></a></li>
+                    <p class="all-quantity">{{ total_quantity }}</p>
+                    {% else %}
+                    <li><a href="/cart/"><img src="{% static 'image/buy.png' %}" alt="" class="index-div-profil"></a></li>
+                    <p class="all-quantity">{{ '-' }}</p>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' username=user.username %}"><img class="index-div-profil index-div-profil-round" src="{{ user.profile.image.url }}"></a></li>
+                    {% else %}
                     <li><a href="{% url 'login' %}"><img src="{% static 'image/profil.png' %}" alt="" class="index-div-profil"></a></li>
+                    {% endif %}
                 </div>
             </ul>
         </div>
@@ -30,7 +40,7 @@
             <div class="catalog-carts">
                 {% for product in products %}
                 <div class="catalog-cart">
-                    <img class="cart-img" src="{{ product.imgg.url }}" alt="">
+                    <a href=""><img class="cart-img" src="{{ product.imgg.url }}" alt=""></a>
                     <div class="all-text-cart">
                     <div class="name-text-cart">
                         <h2 class="cart-title">{{ product.title }}</h2>
@@ -38,7 +48,11 @@
                     </div>
                         <p class="cart-text cart-text-brend">{{ product.brendd }}</p>
                         <div class="cart-text-href1">
+                            {% if user.is_authenticated %}
                             <a class="cart-text-href" href="{% url 'catalog:add_to_cart' product.id %}">Добавить в корзину</a>
+                            {% else %}
+                            <a class="cart-text-href" href="{% url 'login' %}">Войти в аккаунт</a>
+                            {% endif %}
                          </div>
                     </div>
                 </div>
