@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import clothes, newss, Topic, Comment
+from .models import clothes, newss, Topic, Comment, Post, CartItem, gender
 
 
 @admin.register(clothes)
@@ -21,6 +21,9 @@ class ClothesAdmin(admin.ModelAdmin):
 admin.site.register(newss)
 admin.site.register(Topic)
 admin.site.register(Comment)
+admin.site.register(Post)
+admin.site.register(CartItem)
+admin.site.register(gender)
 
 
 

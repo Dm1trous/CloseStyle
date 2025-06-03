@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin
 
 from .forms import CreateCommentForm
-from .models import clothes, newss, CartItem, Post, Topic, Comment
+from .models import clothes, newss, CartItem, Post, Topic, Comment, size, color, brend, gender, cat, material
 from django.views.generic import (
     ListView,
     DetailView,
@@ -12,13 +12,31 @@ from django.views.generic import (
 )
 
 def index(request):
-    num_clothes = clothes.objects.all().count()
+    # Извлекаем фильтры
+    gender_filter = request.GET.get("gender", "all")
+
+    # Формируем список товаров согласно фильтру
+    if gender_filter == "male":
+        latest_products = clothes.objects.filter(genderr__name="Мужчины").order_by("-dates")[:5]
+    elif gender_filter == "female":
+        latest_products = clothes.objects.filter(genderr__name="Женщины").order_by("-dates")[:5]
+    else:
+        latest_products = clothes.objects.order_by("-dates")[:5]
+
+    # Определяем количество товаров в корзине
     if request.user.is_authenticated:
         cart_items = CartItem.objects.filter(user=request.user)
         total_quantity = sum(item.quantity for item in cart_items)
-        return render(request,'catalog/base.html', context={'num_clothes': num_clothes, 'total_quantity': total_quantity})
+        return render(request, 'catalog/base.html', {
+            'latest_products': latest_products,
+            'num_clothes': len(latest_products),
+            'total_quantity': total_quantity
+        })
     else:
-        return render(request, 'catalog/base.html',context={'num_clothes': num_clothes})
+        return render(request, 'catalog/base.html', {
+            'latest_products': latest_products,
+            'num_clothes': len(latest_products)
+        })
 
 
 
@@ -63,8 +81,17 @@ def view_cart(request):
 
 def add_to_cart(request, product_id):
     product = clothes.objects.get(id=product_id)
-    cart_item, created = CartItem.objects.get_or_create(product=product,
-                                                       user=request.user)
+    size_id = request.GET.get('size_id')
+    if size_id is None or int(size_id) not in list(product.sizee.values_list('id', flat=True)):
+        raise ("Нет такого размера!")
+
+    chosen_size = size.objects.get(id=int(size_id))
+
+    cart_item, created = CartItem.objects.get_or_create(
+        product=product,
+        user=request.user,
+        size=chosen_size
+    )
     cart_item.quantity += 1
     cart_item.save()
     return redirect('catalog:view_cart')
@@ -151,3 +178,72 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+
+def product_detail(request, product_id):
+    product = get_object_or_404(clothes, id=product_id)
+    available_sizes = product.sizee.all()
+    return render(request, 'catalog/product_detail.html', {'product': product, 'sizes': available_sizes})
+
+def product_list(request):
+    # Получаем параметры из GET-запроса
+    sort_order = request.GET.get('sort', '')
+    size_ids = request.GET.getlist('size')
+    color_ids = request.GET.getlist('color')
+    brand_ids = request.GET.getlist('brand')
+    gender_id = request.GET.get('gender')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    category_ids = request.GET.getlist('category')
+    material_ids = request.GET.getlist('material')
+
+    # Базовый queryset
+    products = clothes.objects.all()
+
+    # Фильтрация по параметрам
+    if size_ids:
+        products = products.filter(sizee__in=size_ids)
+    if color_ids:
+        products = products.filter(colorr__in=color_ids)
+    if brand_ids:
+        products = products.filter(brendd__in=brand_ids)
+    if gender_id and gender_id != 'all':
+        products = products.filter(genderr__id=gender_id)
+    if category_ids:
+        products = products.filter(catt__in=category_ids)
+    if material_ids:
+        products = products.filter(materiall__in=material_ids)
+    if min_price and max_price and min_price != 'all' and max_price != 'all':
+        products = products.filter(summ__gte=min_price, summ__lte=max_price)
+
+    # Сортировка
+    if sort_order == 'name_asc':
+        products = products.order_by('title')
+    elif sort_order == 'name_desc':
+        products = products.order_by('-title')
+    elif sort_order == 'price_asc':
+        products = products.order_by('summ')
+    elif sort_order == 'price_desc':
+        products = products.order_by('-summ')
+
+    # Контекст с товарами и доступными фильтрами
+    context = {
+        'products': products,
+        'sizes': size.objects.all(),
+        'colors': color.objects.all(),
+        'brands': brend.objects.all(),
+        'genders': gender.objects.all(),
+        'categories': cat.objects.all(),
+        'materials': material.objects.all(),
+        'cat': cat.objects.all(),
+        'selected_genders': gender_id,
+        'selected_colors': color_ids,
+        'selected_brands': brand_ids,
+        'selected_sizes': size_ids,
+        'selected_categories': category_ids,
+        'selected_materials': material_ids,
+        'min_price': min_price,
+        'max_price': max_price,
+        'sort_order': sort_order,
+    }
+
+    return render(request, 'catalog/products.html', context)

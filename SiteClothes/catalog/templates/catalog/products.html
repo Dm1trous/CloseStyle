@@ -1,65 +1,175 @@
+{% extends "forum/base.html" %}
 {% load static %}
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог</title>
-    <link rel="shortcut icon" href="{% static 'image/logo1.png' %}" type="image/x-icon">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-</head>
-<body>
 {% block content %}
-    <header class="header">
-        <div class="index-div index-div1">
-            <ul class="index-div-list">
-                <li><a href="/"><img src="{% static 'image/logo2.png' %}" alt="" class="index-div-logo"></a></li>
-                <li class="index-div-list-item"><a href="/products/" class="index-div-list-item-text">Каталог</a></li>
-                <li class="index-div-list-item"><a href="/forum/" class="index-div-list-item-text">Форум</a></li>
-                <li class="index-div-list-item"><a href="/news/" class="index-div-list-item-text">Новости магазина</a></li>
-                <li class="index-div-list-item"><a href="/contacts/" class="index-div-list-item-text">Контактная информация</a></li>
-                <div class="buy-profil">
-                    {% if user.is_authenticated %}
-                    <li><a href="/cart/"><img src="{% static 'image/buy.png' %}" alt="" class="index-div-profil"></a></li>
-                    <p class="all-quantity">{{ total_quantity }}</p>
-                    {% else %}
-                    <li><a href="/cart/"><img src="{% static 'image/buy.png' %}" alt="" class="index-div-profil"></a></li>
-                    <p class="all-quantity">{{ '-' }}</p>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                    <li><a href="{% url 'profile' username=user.username %}"><img class="index-div-profil index-div-profil-round" src="{{ user.profile.image.url }}"></a></li>
-                    {% else %}
-                    <li><a href="{% url 'login' %}"><img src="{% static 'image/profil.png' %}" alt="" class="index-div-profil"></a></li>
-                    {% endif %}
-                </div>
-            </ul>
-        </div>
-    </header>
     <section class="section section-catalog">
         <div class="fake fake1"><br></div>
         <div class="div-catalog">
             <div class="catalog-carts">
+                <div class="catalog-carts-one">
+ <div class="sidebar sidebar-filter">
+     <details>
+         <summary class="sidebar-title">Фильтры</summary>
+         <form id="sidebar-form" action="{% url 'catalog:view_product' %}" method="get">
+             <p class="sidebar-group-title">Пол</p>
+             <div class="sidebar-group-content">
+                              <label class="label-sidebar">
+                    <input type="radio" name="gender" value="all" checked
+                           {% if selected_genders == 'all' %}checked{% endif %}>
+                        Все
+                </label>
+             <div class="radio-group">
+                 <div class="sidebar-group-content">
+
+                {% for gen in genders %}
+                    <label class="label-sidebar">
+                        <input type="radio" name="gender" value="{{ gen.id }}"
+                               {% if selected_genders == gen.id|stringformat:'s' %}checked{% endif %}>
+                            {{ gen.name }}
+                    </label>
+                {% endfor %}
+                     </div>
+            </div>
+             </div>
+
+
+            <p class="sidebar-group-title">Размер</p>
+            <div class="checkbox-group">
+                <div class="sidebar-group-content sidebar-group-content2">
+                {% for s in sizes %}
+                    <label class="label-sidebar">
+                        <input type="checkbox" name="size" value="{{ s.id }}"
+                               {% if s.id|stringformat:'s' in selected_sizes %}checked{% endif %}>
+                            {{ s.name }}
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+
+             <p class="sidebar-group-title">Материал</p>
+            <div class="checkbox-group">
+                <div class="sidebar-group-content sidebar-group-content2">
+                {% for mat in materials %}
+                    <label>
+                        <input type="checkbox" name="material" value="{{ mat.id }}"
+                               {% if mat.id|stringformat:'s' in selected_materials %}checked{% endif %}>
+                            {{ mat.name }}
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+
+             <p class="sidebar-group-title">Категория</p>
+            <div class="checkbox-group">
+                <div class="sidebar-group-content sidebar-group-content2 sidebar-group-content3">
+  {% for cat in categories %}
+                    <label>
+                        <input type="checkbox" name="category" value="{{ cat.id }}"
+                               {% if cat.id|stringformat:'s' in selected_categories %}checked{% endif %}>
+                            {{ cat.name }}
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+
+            <p class="sidebar-group-title">Цвет</p>
+            <div class="checkbox-group">
+                <div class="sidebar-group-content sidebar-group-content2">
+                {% for col in colors %}
+                    <label class="label-sidebar">
+                        <input type="checkbox" name="color" value="{{ col.id }}"
+                               {% if col.id|stringformat:'s' in selected_colors %}checked{% endif %}>
+                            {{ col.name }}
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+
+            <p class="sidebar-group-title">Бренд</p>
+            <div class="checkbox-group">
+                 <div class="sidebar-group-content sidebar-group-content2 sidebar-group-content3">
+                {% for brnd in brands %}
+                    <label class="label-sidebar">
+                        <input type="checkbox" name="brand" value="{{ brnd.id }}"
+                               {% if brnd.id|stringformat:'s' in selected_brands %}checked{% endif %}>
+                            {{ brnd.name }}
+                    </label>
+                {% endfor %}
+                     </div>
+            </div>
+
+            <p class="sidebar-group-title">Цена</p>
+            <div class="range-group">
+                <div class="sidebar-group-content sidebar-group-content4">
+                <label>Мин:</label>
+                <input type="number" name="min_price" step="100" min="0" value="{% firstof min_price '' %}" class="range-price-input">
+                <label>Макс:</label>
+                <input type="number" name="max_price" step="100" min="0" value="{% firstof max_price '' %}" class="range-price-input">
+                </div>
+            </div>
+    </form>
+         <div class="sidebar-btn-group">
+            <button type="submit" class="under-index-new-grids-btn under-index-new-grids-btn2" form="sidebar-form">Применить</button>
+            <a href="{% url 'catalog:view_product' %}" class="under-index-new-grids-btn under-index-new-grids-btn2">Сбросить</a>
+         </div>
+     </details>
+     <form id="form-sort">
+         <div class="sort-block">
+             <details class="details-sort">
+         <summary class="sidebar-title">Сортировка</summary>
+                 <div class="sort-group">
+        <p class="sort-by-text">Сортировать по:</p>
+        <select name="sort" id="sort-by" class="sort-by">
+            <option value="" {% if not sort_order %}selected{% endif %}>Выбор сортировки</option>
+            <option value="name_asc" {% if sort_order == 'name_asc' %}selected{% endif %}>Названию (А-Я)</option>
+            <option value="name_desc" {% if sort_order == 'name_desc' %}selected{% endif %}>Названию (Я-А)</option>
+            <option value="price_asc" {% if sort_order == 'price_asc' %}selected{% endif %}>Цене (дешевле)</option>
+            <option value="price_desc" {% if sort_order == 'price_desc' %}selected{% endif %}>Цене (дороже)</option>
+        </select>
+                 </div>
+             <button form="form-sort"  type="submit" class="under-index-new-grids-btn under-index-new-grids-btn2">Применить</button>
+             </details>
+    </div>
+     </form>
+
+</div>
+                </div>
                 {% for product in products %}
-                <div class="catalog-cart">
-                    <a href=""><img class="cart-img" src="{{ product.imgg.url }}" alt=""></a>
-                    <div class="all-text-cart">
-                    <div class="name-text-cart">
-                        <h2 class="cart-title">{{ product.title }}</h2>
-                        <p class="cart-text-price">{{ product.summ }} ₽</p>
+                <div class="index-new-grid-content">
+                    <div class="product-card">
+                        <div class="image-wrapper image-wrapper2">
+                            <img class="index-new-grid-content index-new-grid-content2" src="{{ product.imgg.url }}" alt="{{ product.title }}" />
+                        </div>
+                        <div class="under-index-new-grids">
+                            <p class="under-index-new-grids-text under-index-new-grids-text-price">{{ product.summ }} ₽</p>
+                            <p class="under-index-new-grids-text under-index-new-grids-text2">{{ product.title }}</p>
+                        </div>
+                        <div class="under-index-new-grids under-index-new-grids2">
+                            <a href="#" class="under-index-new-grids-btn under-index-new-grids-btn1">В избранное</a>
+                            <a href="#" class="under-index-new-grids-btn" onclick="showModal({{ product.id }})">В корзину</a>
+                        </div>
                     </div>
-                        <p class="cart-text cart-text-brend">{{ product.brendd }}</p>
-                        <div class="cart-text-href1">
-                            {% if user.is_authenticated %}
-                            <a class="cart-text-href" href="{% url 'catalog:add_to_cart' product.id %}">Добавить в корзину</a>
-                            {% else %}
-                            <a class="cart-text-href" href="{% url 'login' %}">Войти в аккаунт</a>
-                            {% endif %}
-                         </div>
+
+                    <!-- MODAL WNDOW FOR EACH PRODUCT -->
+                    <div id="cart-modal-{{ product.id }}" class="modal">
+                        <div class="modal-content">
+                            <span class="close-button" onclick="closeModal({{ product.id }})">×</span>
+                            <h2 class="modal-title">Выберите размер</h2>
+                            <div class="size-buttons">
+                                {% for size in product.sizee.all %}
+                                    <button class="size-button" onclick="addToCart({{ product.id }}, {{ size.id }}, '{% url 'catalog:add_to_cart' 0 %}')">{{ size.name }}</button>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </section>
+<div id="notification-bar" class="notification-bar">
+    Товар добавлен в корзину!
+</div>
+    <script src="{% static 'js/modal.js' %}"></script>
+    <script src="{% static 'js/slider.js' %}"></script>
+    <script src="{% static 'js/stop.js' %}"></script>
 {% endblock %}
-</body>
-</html>

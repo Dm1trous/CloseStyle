@@ -97,6 +97,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(clothes, on_delete=models.CASCADE, verbose_name="Товар")
     quantity = models.PositiveIntegerField(default=0, verbose_name="Количество")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    size = models.ForeignKey(size, on_delete=models.PROTECT, blank=True, null=True, verbose_name="Размер")
     date_added = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = 'Корзина'

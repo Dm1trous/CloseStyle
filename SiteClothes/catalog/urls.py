@@ -13,14 +13,12 @@ app_name = 'catalog'
 
 urlpatterns = [
     path('', views.index, name='index'),
-
     path('forum/', TopicListView.as_view(), name='forum-index'),
     path('topic/add/', TopicCreateView.as_view(), name='topic-add'),
     path('topic/<int:pk>/', TopicDetailView.as_view(), name='topic-detail'),
     path('topic/<int:pk>/newpost/', PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
-
     path('news/', views.News, name='news'),
     path('contacts/', views.Contacts, name='contacts'),
     path('cart/', views.view_cart, name='view_cart'),
