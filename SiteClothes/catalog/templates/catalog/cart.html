@@ -1,76 +1,86 @@
 {% extends "forum/base.html" %}
 {% load static %}
+{% load my_filters %}
 {% block content %}
 <section class="section section-cart">
         <div class="fake fake2"><br></div>
-    {% if user.is_authenticated %}
-    <h2 class="cartt-title">Корзина {{ user.username }}</h2>
-    {% else %}
-    <h2 class="cartt-title">Ваша корзина</h2>
-    {% endif %}
-    {% for item in cart_items|slice:":1"%}
-        <div class="div-cart div-cart1">
-            <h2 class="div-cart-title">Товар</h2>
-            <h2 class="div-cart-title">Наименование</h2>
-            <h2 class="div-cart-title">Бренд</h2>
-            <h2 class="div-cart-title">Количество</h2>
-            <h2 class="div-cart-title">Цена за шт.</h2>
-            <h2 class="div-cart-title">Удалить</h2>
-        </div>
-    {% empty %}
-    {% if user.is_authenticated %}
-        <div class="cart-none">
-            <h3 class="cart-none-title">Ваша корзина пуста</h3>
-            <img src="{% static 'image/empty_cart.png' %}" class="empty_cart_img">
-            <a href="/products/" class="cart-none-btn news-btn">Перейти в каталог</a>
-        </div>
-    {% else %}
-    <div class="cart-none">
-            <h3 class="cart-none-title">Ваша корзина пуста</h3>
-            <img src="{% static 'image/empty_cart.png' %}" class="empty_cart_img">
-            <a href="{% url 'login' %}" class="cart-none-btn news-btn">Войти в аккаунт</a>
-        </div>
-    {% endif %}
-    {% endfor %}
-
-{% for item in cart_items %}
-        <div class="div-cart div-cart2">
-            <div class="div-cart-content div-cart-img">
-                <img class="div-cart-image" src="{{ item.product.imgg.url }}" alt="">
-            </div>
-            <div class="div-cart-content">
-                <p class="div-cart-text">{{ item.product.title }}</p>
-            </div>
-            <div class="div-cart-content">
-                <p class="div-cart-text">{{ item.product.brendd }}</p>
-            </div>
-            <div class="div-cart-content">
+    {% if cart_items %}
+    <div class="cart-big-group">
+        <div class="cart-group cart-group1">
+            <h3 class="cart-title">Корзина</h3>
+            <p class="cart-count">{{ total_quantity }} {{ total_quantity|pluralize_товар }}</p>
+            {% for item in cart_items %}
+            <div class="cart-grid">
+                <div class="cart-flex-group">
+                <img src="{{ item.product.imgg.url }}" alt="{{ item.product.title }}" class="cart-img">
+                <div class="cart-flex-column">
+                    <div class="cart-text-flex-column">
+                    <p class="cart-text-title">{{ item.product.title }}</p>
+                    <p class="cart-text-subtitle">{{ item.product.colorr }}</p>
+                    <p class="cart-text-subtitle">{{ item.size.name }} р.</p>
+                        </div>
+                    <div class="icons-cart-group">
+                        <a href="#"><img class="cart-group-png" src="{% static 'image/heart.png' %}"></a>
+                        <a href="{% url 'catalog:remove_from_cart' item.id %}"><img class="cart-group-png cart-group-png2" src="{% static 'image/die.png' %}"></a>
+                    </div>
+                </div>
+                    </div>
+                <div class="item-quantity">
                 {% if item.quantity > 1 %}
-                <a class="plus-minus minus" href="{% url 'catalog:minus_from_cart' item.id %}">-</a><p class="div-cart-text">{{ item.quantity }}</p><a class="plus-minus" href="{% url 'catalog:plus_from_cart' item.id %}">+</a>
-                {% else %}
-                <p class="minus-none">-</p><p class="div-cart-text">{{ item.quantity }}</p><a class="plus-minus" href="{% url 'catalog:plus_from_cart' item.id %}">+</a>
-                {% endif %}
-            </div>
-            <div class="div-cart-content">
-                <p class="div-cart-text">{{ item.product.summ }} ₽</p>
-            </div>
-            <div class="div-cart-content">
-                <a href="{% url 'catalog:remove_from_cart' item.id %}"><img class="die-png" src="{% static 'image/die.png' %}"></a>
-            </div>
-        </div>
-    {% endfor %}
-    {% for item in cart_items|slice:":1"%}
-        <div class="dops">
-            {% if total_quantity == 1 %}
-            <p class="all-cost">{{ total_quantity }} товар на сумму {{ total_price }} ₽</p>
-            {% elif total_quantity < 5 %}
-            <p class="all-cost">{{ total_quantity }} товара на сумму {{ total_price }} ₽</p>
-            {% elif total_quantity > 4 %}
-            <p class="all-cost">{{ total_quantity }} товаров на сумму {{ total_price }} ₽</p>
+            <a class="plus-minus minus" href="{% url 'catalog:minus_from_cart' item.id %}">-</a>
+            <p class="div-cart-text">{{ item.quantity }}</p>
+            <a class="plus-minus" href="{% url 'catalog:plus_from_cart' item.id %}">+</a>
+            {% else %}
+            <p class="plus-minus minus-none">-</p>
+            <p class="div-cart-text">{{ item.quantity }}</p>
+            <a class="plus-minus" href="{% url 'catalog:plus_from_cart' item.id %}">+</a>
             {% endif %}
-            <a href="" class="cart-btn news-btn">Купить</a>
+                </div>
+                <p class="cart-text-pricee">{{ item.product.summ|multiply:item.quantity }} ₽</p>
+            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+                <div class="cart-group cart-group2">
+                    <h3 class="cart-title cart-title2">Оформление заказа</h3>
+                    <p class="cart-count">Товары, {{ total_quantity }} шт.</p>
+                    <div class="cart-summ-group cart-summ-group2">
+                     <p class="cart-count">Скидка</p>
+                    <p class="cart-count cart-promo">0 ₽</p>
+                    </div>
+                    <p class="cart-count cart-promo">Промокод (если есть)</p>
+                            <form class="search-form promo-form" >
+                                <input type="text"    class="search"/>
+                                <button type="submit" class="search-btn under-index-new-grids-btn">Применить</button>
+                        </form>
+                    <div class="cart-summ-group">
+                        <h3 class="cart-title cart-title-summ">Итого</h3>
+                        <h3 class="cart-title cart-title-summ">{{ total_price }} ₽</h3>
+                    </div>
+                        <a class="buy-link-btn" href="#">Заказать</a>
+
+        </div>
+        <div class="cart-group cart-group3">
+            <h3 class="cart-title">Способ доставки</h3>
+
+        </div>
+    </div>
+    {% else %}
+        <div class="cart-big-group">
+        <div class="cart-group cart-group1">
+            <h3 class="cart-title">Корзина</h3>
+            <p class="cart-count">{{ total_quantity }} {{ total_quantity|pluralize_товар }}</p>
+            <div class="cart-none-group">
+                <p class="cart-none-text">В вашей корзине пока ничего нет</p>
+                <a class="under-index-new-grids-btn cart-none-btn" href="/products/">Перейти в каталог</a>
+                </div>
+        </div>
+        <div class="cart-group cart-group2">
+safasf
+        </div>
+    </div>
+
+    {% endif %}
+
     </section>
 {% endblock %}
 

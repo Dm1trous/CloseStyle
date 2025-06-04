@@ -7,6 +7,11 @@
             <div class="catalog-carts">
                 <div class="catalog-carts-one">
  <div class="sidebar sidebar-filter">
+                     <!-- Поисковая форма -->
+        <form class="search-form" action="{% url 'catalog:view_product' %}" method="get">
+            <input type="text" name="q" placeholder="Поиск..." value="{{ request.GET.q }}" class="search"/>
+            <button type="submit" class="search-btn under-index-new-grids-btn">Искать</button>
+        </form>
      <details>
          <summary class="sidebar-title">Фильтры</summary>
          <form id="sidebar-form" action="{% url 'catalog:view_product' %}" method="get">
@@ -15,7 +20,7 @@
                               <label class="label-sidebar">
                     <input type="radio" name="gender" value="all" checked
                            {% if selected_genders == 'all' %}checked{% endif %}>
-                        Все
+                        Все ({{ total_products_count }})
                 </label>
              <div class="radio-group">
                  <div class="sidebar-group-content">
@@ -24,12 +29,35 @@
                     <label class="label-sidebar">
                         <input type="radio" name="gender" value="{{ gen.id }}"
                                {% if selected_genders == gen.id|stringformat:'s' %}checked{% endif %}>
-                            {{ gen.name }}
+                            {{ gen.name }} ({{ gen.product_count }})
                     </label>
                 {% endfor %}
                      </div>
             </div>
              </div>
+
+                          <p class="sidebar-group-title">Категория</p>
+            <div class="checkbox-group">
+                <div class="sidebar-group-content">
+  {% for cat in categories %}
+                    <label>
+                        <input type="checkbox" name="category" value="{{ cat.id }}"
+                               {% if cat.id|stringformat:'s' in selected_categories %}checked{% endif %}>
+                            {{ cat.name }} ({{ cat.product_count }})
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+
+                         <p class="sidebar-group-title">Цена</p>
+            <div class="range-group">
+                <div class="sidebar-group-content sidebar-group-content4">
+                <label>Мин:</label>
+                <input type="number" name="min_price" step="100" min="0" value="{% firstof min_price '' %}" class="range-price-input">
+                <label>Макс:</label>
+                <input type="number" name="max_price" step="100" min="0" value="{% firstof max_price '' %}" class="range-price-input">
+                </div>
+            </div>
 
 
             <p class="sidebar-group-title">Размер</p>
@@ -58,22 +86,10 @@
                 </div>
             </div>
 
-             <p class="sidebar-group-title">Категория</p>
-            <div class="checkbox-group">
-                <div class="sidebar-group-content sidebar-group-content2 sidebar-group-content3">
-  {% for cat in categories %}
-                    <label>
-                        <input type="checkbox" name="category" value="{{ cat.id }}"
-                               {% if cat.id|stringformat:'s' in selected_categories %}checked{% endif %}>
-                            {{ cat.name }}
-                    </label>
-                {% endfor %}
-                </div>
-            </div>
 
             <p class="sidebar-group-title">Цвет</p>
             <div class="checkbox-group">
-                <div class="sidebar-group-content sidebar-group-content2">
+                <div class="sidebar-group-content sidebar-group-content2  sidebar-group-content3">
                 {% for col in colors %}
                     <label class="label-sidebar">
                         <input type="checkbox" name="color" value="{{ col.id }}"
@@ -86,26 +102,17 @@
 
             <p class="sidebar-group-title">Бренд</p>
             <div class="checkbox-group">
-                 <div class="sidebar-group-content sidebar-group-content2 sidebar-group-content3">
+                 <div class="sidebar-group-content">
                 {% for brnd in brands %}
                     <label class="label-sidebar">
                         <input type="checkbox" name="brand" value="{{ brnd.id }}"
                                {% if brnd.id|stringformat:'s' in selected_brands %}checked{% endif %}>
-                            {{ brnd.name }}
+                            {{ brnd.name }} ({{ brnd.product_count }})
                     </label>
                 {% endfor %}
                      </div>
             </div>
 
-            <p class="sidebar-group-title">Цена</p>
-            <div class="range-group">
-                <div class="sidebar-group-content sidebar-group-content4">
-                <label>Мин:</label>
-                <input type="number" name="min_price" step="100" min="0" value="{% firstof min_price '' %}" class="range-price-input">
-                <label>Макс:</label>
-                <input type="number" name="max_price" step="100" min="0" value="{% firstof max_price '' %}" class="range-price-input">
-                </div>
-            </div>
     </form>
          <div class="sidebar-btn-group">
             <button type="submit" class="under-index-new-grids-btn under-index-new-grids-btn2" form="sidebar-form">Применить</button>
@@ -133,14 +140,17 @@
 
 </div>
                 </div>
-                {% for product in products %}
+                {% for product in page_obj %}
                 <div class="index-new-grid-content">
                     <div class="product-card">
                         <div class="image-wrapper image-wrapper2">
                             <img class="index-new-grid-content index-new-grid-content2" src="{{ product.imgg.url }}" alt="{{ product.title }}" />
                         </div>
                         <div class="under-index-new-grids">
-                            <p class="under-index-new-grids-text under-index-new-grids-text-price">{{ product.summ }} ₽</p>
+                            <div class="under-index-new-flex">
+                                <p class="under-index-new-grids-text under-index-new-grids-text2"><span class="yes-brend">✔</span>{{ product.brendd }}</p>
+                                <p class="under-index-new-grids-text under-index-new-grids-text-price">{{ product.summ }} ₽</p>
+                                </div>
                             <p class="under-index-new-grids-text under-index-new-grids-text2">{{ product.title }}</p>
                         </div>
                         <div class="under-index-new-grids under-index-new-grids2">
@@ -163,6 +173,21 @@
                     </div>
                 </div>
                 {% endfor %}
+                <nav aria-label="Page navigation example" class="pagination-group">
+                            <ul class="pagination pagination-lg">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a></li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
             </div>
         </div>
     </section>
@@ -171,5 +196,4 @@
 </div>
     <script src="{% static 'js/modal.js' %}"></script>
     <script src="{% static 'js/slider.js' %}"></script>
-    <script src="{% static 'js/stop.js' %}"></script>
 {% endblock %}

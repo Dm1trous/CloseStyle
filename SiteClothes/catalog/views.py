@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin
+from django.db.models import Count
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .forms import CreateCommentForm
 from .models import clothes, newss, CartItem, Post, Topic, Comment, size, color, brend, gender, cat, material
@@ -185,7 +188,7 @@ def product_detail(request, product_id):
     return render(request, 'catalog/product_detail.html', {'product': product, 'sizes': available_sizes})
 
 def product_list(request):
-    # Получаем параметры из GET-запроса
+    search_query = request.GET.get('q', '')
     sort_order = request.GET.get('sort', '')
     size_ids = request.GET.getlist('size')
     color_ids = request.GET.getlist('color')
@@ -196,10 +199,11 @@ def product_list(request):
     category_ids = request.GET.getlist('category')
     material_ids = request.GET.getlist('material')
 
-    # Базовый queryset
-    products = clothes.objects.all()
+    products = clothes.objects.order_by('-dates')
 
-    # Фильтрация по параметрам
+    if search_query:
+        products = products.filter(Q(title__icontains=search_query) | Q(brendd__name__icontains=search_query))
+
     if size_ids:
         products = products.filter(sizee__in=size_ids)
     if color_ids:
@@ -215,7 +219,6 @@ def product_list(request):
     if min_price and max_price and min_price != 'all' and max_price != 'all':
         products = products.filter(summ__gte=min_price, summ__lte=max_price)
 
-    # Сортировка
     if sort_order == 'name_asc':
         products = products.order_by('title')
     elif sort_order == 'name_desc':
@@ -225,14 +228,26 @@ def product_list(request):
     elif sort_order == 'price_desc':
         products = products.order_by('-summ')
 
-    # Контекст с товарами и доступными фильтрами
+    sizes = size.objects.annotate(product_count=Count('size', distinct=True))
+
+    brends = brend.objects.annotate(product_count=Count('clothes', distinct=True))
+
+    categories = cat.objects.annotate(product_count=Count('clothes', distinct=True))
+
+    genders = gender.objects.annotate(product_count=Count('clothes'))
+
+    paginator = Paginator(products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        'page_obj': page_obj,
         'products': products,
-        'sizes': size.objects.all(),
+        'sizes': sizes,
         'colors': color.objects.all(),
-        'brands': brend.objects.all(),
-        'genders': gender.objects.all(),
-        'categories': cat.objects.all(),
+        'brands': brends,
+        'genders': genders,
+        'categories': categories,
         'materials': material.objects.all(),
         'cat': cat.objects.all(),
         'selected_genders': gender_id,
@@ -244,6 +259,7 @@ def product_list(request):
         'min_price': min_price,
         'max_price': max_price,
         'sort_order': sort_order,
+        'total_products_count': products.count()
     }
 
     return render(request, 'catalog/products.html', context)
