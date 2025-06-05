@@ -7,13 +7,15 @@ from django.utils.timezone import localtime
 
 class clothes(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название")
-    summ = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Стоимость")
+    description = models.CharField(max_length=500, verbose_name="Описание", null=True)
+    summ = models.IntegerField(verbose_name="Стоимость")
     catt = models.ForeignKey('cat', on_delete=models.CASCADE, verbose_name="Категория")
     genderr = models.ForeignKey('gender', on_delete=models.CASCADE, verbose_name="Для")
     sizee = models.ManyToManyField('size', verbose_name="Размер", related_name='size')
     materiall = models.ManyToManyField('material', verbose_name="Материал")
     colorr = models.ForeignKey('color', on_delete=models.CASCADE, verbose_name="Цвет")
     brendd = models.ForeignKey('brend', on_delete=models.CASCADE, verbose_name="Бренд")
+    countryy = models.ForeignKey('country', on_delete=models.CASCADE, verbose_name="Страна производитель", null=True)
     statuss = models.BooleanField(default=True, verbose_name="В наличии")
     imgg = models.ImageField(verbose_name="Фото", upload_to='image/')
     dates = models.DateTimeField(auto_now=True)
@@ -39,6 +41,14 @@ class brend(models.Model):
     class Meta:
         verbose_name = 'Бренд'
         verbose_name_plural = 'Список брендов'
+    def __str__(self):
+        return self.name
+
+class country(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Страна производитель")
+    class Meta:
+        verbose_name = 'Страна'
+        verbose_name_plural = 'Список стран'
     def __str__(self):
         return self.name
 
@@ -152,3 +162,15 @@ class Comment(models.Model):
     def __str__(self):
         return self.body
 
+class PromoCode(models.Model):
+    code = models.CharField(max_length=50, unique=True, verbose_name="Код")
+    discount_percentage = models.IntegerField(default=0, verbose_name="Процент скидки")
+    max_discount_amount = models.IntegerField(default=None, null=True, blank=True, verbose_name="Максимальная сумма скидки")
+    active = models.BooleanField(default=True, verbose_name="Активность")
+
+    class Meta:
+        verbose_name = 'Промокод'
+        verbose_name_plural = 'Промокоды'
+
+    def __str__(self):
+        return self.code

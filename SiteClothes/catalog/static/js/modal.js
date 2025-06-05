@@ -23,7 +23,7 @@ function showNotification() {
     notificationBar.style.display = 'block';
     setTimeout(function() {
         notificationBar.style.display = 'none';
-    }, 2000); // Убрать уведомление через 2 секунды
+    }, 2000);
 }
 
 function addToCart(productId, sizeId, addToCartUrl) {
@@ -36,7 +36,7 @@ function addToCart(productId, sizeId, addToCartUrl) {
     .then(response => {
         if (response.ok) {
             closeModal(productId);
-            showNotification(); // Показываем уведомление
+            showNotification();
         } else {
             console.error('Ошибка добавления в корзину.');
         }

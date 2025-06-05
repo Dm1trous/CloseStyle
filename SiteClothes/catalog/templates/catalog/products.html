@@ -20,7 +20,7 @@
                               <label class="label-sidebar">
                     <input type="radio" name="gender" value="all" checked
                            {% if selected_genders == 'all' %}checked{% endif %}>
-                        Все ({{ total_products_count }})
+                        Все ({{ all_products_count }})
                 </label>
              <div class="radio-group">
                  <div class="sidebar-group-content">
@@ -119,33 +119,42 @@
             <a href="{% url 'catalog:view_product' %}" class="under-index-new-grids-btn under-index-new-grids-btn2">Сбросить</a>
          </div>
      </details>
-     <form id="form-sort">
-         <div class="sort-block">
-             <details class="details-sort">
-         <summary class="sidebar-title">Сортировка</summary>
-                 <div class="sort-group">
-        <p class="sort-by-text">Сортировать по:</p>
-        <select name="sort" id="sort-by" class="sort-by">
-            <option value="" {% if not sort_order %}selected{% endif %}>Выбор сортировки</option>
-            <option value="name_asc" {% if sort_order == 'name_asc' %}selected{% endif %}>Названию (А-Я)</option>
-            <option value="name_desc" {% if sort_order == 'name_desc' %}selected{% endif %}>Названию (Я-А)</option>
-            <option value="price_asc" {% if sort_order == 'price_asc' %}selected{% endif %}>Цене (дешевле)</option>
-            <option value="price_desc" {% if sort_order == 'price_desc' %}selected{% endif %}>Цене (дороже)</option>
-        </select>
-                 </div>
-             <button form="form-sort"  type="submit" class="under-index-new-grids-btn under-index-new-grids-btn2">Применить</button>
-             </details>
+    <form id="form-sort">
+    <!-- Добавляем скрытые поля для сохранения параметров фильтрации -->
+    {% for key, value in request.GET.items %}
+        {% if key != 'sort' and key != 'page' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+
+    <div class="sort-block">
+        <details class="details-sort">
+            <summary class="sidebar-title">Сортировка</summary>
+            <div class="sort-group">
+                <p class="sort-by-text">Сортировать по:</p>
+                <select name="sort" id="sort-by" class="sort-by">
+                    <option value="" {% if not sort_order %}selected{% endif %}>Выбор сортировки</option>
+                    <option value="name_asc" {% if sort_order == 'name_asc' %}selected{% endif %}>Названию (А-Я)</option>
+                    <option value="name_desc" {% if sort_order == 'name_desc' %}selected{% endif %}>Названию (Я-А)</option>
+                    <option value="price_asc" {% if sort_order == 'price_asc' %}selected{% endif %}>Цене (дешевле)</option>
+                    <option value="price_desc" {% if sort_order == 'price_desc' %}selected{% endif %}>Цене (дороже)</option>
+                </select>
+            </div>
+            <button type="submit" class="under-index-new-grids-btn under-index-new-grids-btn2">Применить</button>
+        </details>
     </div>
-     </form>
+</form>
 
 </div>
                 </div>
                 {% for product in page_obj %}
                 <div class="index-new-grid-content">
                     <div class="product-card">
-                        <div class="image-wrapper image-wrapper2">
-                            <img class="index-new-grid-content index-new-grid-content2" src="{{ product.imgg.url }}" alt="{{ product.title }}" />
-                        </div>
+<div class="image-wrapper image-wrapper2">
+    <a href="{% url 'catalog:product_detail' product.id %}">
+        <img class="index-new-grid-content index-new-grid-content2" src="{{ product.imgg.url }}" alt="{{ product.title }}" />
+    </a>
+</div>
                         <div class="under-index-new-grids">
                             <div class="under-index-new-flex">
                                 <p class="under-index-new-grids-text under-index-new-grids-text2"><span class="yes-brend">✔</span>{{ product.brendd }}</p>

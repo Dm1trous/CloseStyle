@@ -1,12 +1,14 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin
 from django.db.models import Count
 from django.core.paginator import Paginator
 from django.db.models import Q
+from .forms import ApplyPromoCodeForm
 
 from .forms import CreateCommentForm
-from .models import clothes, newss, CartItem, Post, Topic, Comment, size, color, brend, gender, cat, material
+from .models import clothes, newss, CartItem, Post, Topic, Comment, size, color, brend, gender, cat, material, PromoCode
 from django.views.generic import (
     ListView,
     DetailView,
@@ -72,12 +74,40 @@ def product_list(request):
         return render(request, "catalog/products.html", {'products': products})
 
 
+def apply_promocode(request):
+    if request.method == 'POST':
+        form = ApplyPromoCodeForm(request.POST)
+        if form.is_valid():
+            promocode_value = form.cleaned_data['promocode']
+            try:
+                promo_code = PromoCode.objects.get(code=promocode_value, active=True)
+                request.session['applied_promocode'] = promocode_value
+                return redirect('catalog:view_cart')
+            except PromoCode.DoesNotExist:
+                pass
+    return redirect('catalog:view_cart')
+
+
 def view_cart(request):
     if request.user.is_authenticated:
-        cart_items = CartItem.objects.filter(user=request.user)
+        cart_items = CartItem.objects.filter(user=request.user).order_by("-date_added")
         total_price = sum(item.product.summ * item.quantity for item in cart_items)
+        applied_discount = 0
+        if 'applied_promocode' in request.session:
+            promo_code = PromoCode.objects.get(code=request.session['applied_promocode'], active=True)
+            calculated_discount = total_price * promo_code.discount_percentage // 100
+            if promo_code.max_discount_amount is not None:
+                applied_discount = min(calculated_discount, promo_code.max_discount_amount)  # Ограничиваем скидкой
+            else:
+                applied_discount = calculated_discount
+        final_total = total_price - applied_discount
         total_quantity = sum(item.quantity for item in cart_items)
-        return render(request, 'catalog/cart.html',  {'cart_items': cart_items, 'total_price': total_price, 'total_quantity': total_quantity})
+        return render(request, 'catalog/cart.html',
+                      {'cart_items': cart_items,
+                       'total_price': total_price,
+                       'final_total': final_total,
+                       'discount_amount': applied_discount,
+                       'total_quantity': total_quantity})
     else:
         return render(request, 'catalog/cart.html')
 
@@ -85,8 +115,11 @@ def view_cart(request):
 def add_to_cart(request, product_id):
     product = clothes.objects.get(id=product_id)
     size_id = request.GET.get('size_id')
+
     if size_id is None or int(size_id) not in list(product.sizee.values_list('id', flat=True)):
-        raise ("Нет такого размера!")
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'error', 'message': 'Неверный размер'}, status=400)
+        raise Exception("Нет такого размера!")
 
     chosen_size = size.objects.get(id=int(size_id))
 
@@ -97,6 +130,15 @@ def add_to_cart(request, product_id):
     )
     cart_item.quantity += 1
     cart_item.save()
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        cart_items = CartItem.objects.filter(user=request.user)
+        total_quantity = sum(item.quantity for item in cart_items)
+        return JsonResponse({
+            'status': 'success',
+            'total_quantity': total_quantity
+        })
+
     return redirect('catalog:view_cart')
 
 def remove_from_cart(request, item_id):
@@ -182,12 +224,27 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
 def product_detail(request, product_id):
     product = get_object_or_404(clothes, id=product_id)
     available_sizes = product.sizee.all()
-    return render(request, 'catalog/product_detail.html', {'product': product, 'sizes': available_sizes})
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Для AJAX-запросов возвращаем JSON
+        return JsonResponse({
+            'status': 'success',
+            'product_id': product.id,
+            'product_title': product.title
+        })
+
+    return render(request, 'catalog/product_detail.html', {
+        'product': product,
+        'sizes': available_sizes
+    })
+
 
 def product_list(request):
+    # Получаем параметры фильтрации и сортировки
     search_query = request.GET.get('q', '')
     sort_order = request.GET.get('sort', '')
     size_ids = request.GET.getlist('size')
@@ -199,47 +256,62 @@ def product_list(request):
     category_ids = request.GET.getlist('category')
     material_ids = request.GET.getlist('material')
 
-    products = clothes.objects.order_by('-dates')
+    # Базовый набор товаров
+    products = clothes.objects.all().order_by('-dates')
 
+    # Общая статистика по количеству товаров для каждого пола
+    genders = gender.objects.annotate(product_count=Count('clothes'))
+
+    # Применяем остальные фильтры
     if search_query:
         products = products.filter(Q(title__icontains=search_query) | Q(brendd__name__icontains=search_query))
 
     if size_ids:
         products = products.filter(sizee__in=size_ids)
+
     if color_ids:
         products = products.filter(colorr__in=color_ids)
+
     if brand_ids:
         products = products.filter(brendd__in=brand_ids)
+
     if gender_id and gender_id != 'all':
         products = products.filter(genderr__id=gender_id)
+
     if category_ids:
         products = products.filter(catt__in=category_ids)
+
     if material_ids:
         products = products.filter(materiall__in=material_ids)
+
     if min_price and max_price and min_price != 'all' and max_price != 'all':
         products = products.filter(summ__gte=min_price, summ__lte=max_price)
 
+    # Сортировка
     if sort_order == 'name_asc':
         products = products.order_by('title')
     elif sort_order == 'name_desc':
         products = products.order_by('-title')
     elif sort_order == 'price_asc':
-        products = products.order_by('summ')
+        products = products.filter(summ__isnull=False).order_by('summ')
     elif sort_order == 'price_desc':
-        products = products.order_by('-summ')
+        products = products.filter(summ__isnull=False).order_by('-summ')
 
-    sizes = size.objects.annotate(product_count=Count('size', distinct=True))
+    # Получаем размеры, бренды, материалы и прочие данные
+    sizes = size.objects.annotate(product_count=Count('size', distinct=True)).distinct()
+    brends = brend.objects.annotate(product_count=Count('clothes', distinct=True)).distinct()
+    categories = cat.objects.annotate(product_count=Count('clothes', distinct=True)).distinct()
+    materials = material.objects.all()
 
-    brends = brend.objects.annotate(product_count=Count('clothes', distinct=True))
-
-    categories = cat.objects.annotate(product_count=Count('clothes', distinct=True))
-
-    genders = gender.objects.annotate(product_count=Count('clothes'))
-
+    # Создаем пагинатор
     paginator = Paginator(products, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Определяем общее количество товаров
+    all_products_count = clothes.objects.count()
+
+    # Формирование контекста
     context = {
         'page_obj': page_obj,
         'products': products,
@@ -248,8 +320,7 @@ def product_list(request):
         'brands': brends,
         'genders': genders,
         'categories': categories,
-        'materials': material.objects.all(),
-        'cat': cat.objects.all(),
+        'materials': materials,
         'selected_genders': gender_id,
         'selected_colors': color_ids,
         'selected_brands': brand_ids,
@@ -259,7 +330,7 @@ def product_list(request):
         'min_price': min_price,
         'max_price': max_price,
         'sort_order': sort_order,
-        'total_products_count': products.count()
+        'all_products_count': all_products_count,  # Новое поле для отображения количества всех товаров
     }
 
     return render(request, 'catalog/products.html', context)

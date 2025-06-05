@@ -1,15 +1,16 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import clothes, newss, Topic, Comment, Post, CartItem, gender, brend, size, cat, color, material
+from .models import clothes, newss, Topic, Comment, Post, CartItem, gender, brend, size, cat, color, material, \
+    PromoCode, country
 
 
 @admin.register(clothes)
 class ClothesAdmin(admin.ModelAdmin):
     list_display = ('title', 'summ', 'catt', 'genderr', 'display_size', 'statuss', 'image_show')
     list_filter = ('catt', 'genderr')
-    fieldsets = (('Общая информация', {'fields': ('title', 'summ', 'catt', 'genderr', 'imgg', 'statuss')}),
-                 ('Характеристика', {'fields': ('materiall', 'colorr', 'brendd', 'sizee')}))
+    fieldsets = (('Общая информация', {'fields': ('title', 'description', 'summ', 'catt', 'genderr', 'imgg', 'statuss')}),
+                 ('Характеристика', {'fields': ('materiall', 'colorr', 'brendd', 'sizee', 'countryy')}))
 
     def image_show(self, obj):
         if obj.imgg:
@@ -29,6 +30,8 @@ admin.site.register(size)
 admin.site.register(cat)
 admin.site.register(color)
 admin.site.register(material)
+admin.site.register(PromoCode)
+admin.site.register(country)
 
 
 

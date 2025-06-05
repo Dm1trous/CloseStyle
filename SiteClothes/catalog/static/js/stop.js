@@ -5,6 +5,6 @@ window.onbeforeunload = function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     var savedScrollPosition = parseInt(localStorage.getItem('scrollPosition'));
     if (!isNaN(savedScrollPosition)) {
-        window.scrollTo(0, savedScrollPosition);  // Перемещаемся к нужной позиции
+        window.scrollTo(0, savedScrollPosition);
     }
 });

@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.models import User
-from catalog.models import CartItem
 
 
 from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm

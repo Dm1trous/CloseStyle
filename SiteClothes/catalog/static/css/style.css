@@ -207,7 +207,7 @@ button:hover {
 
 .under-slider-text {
     display: inline-block;
-    animation: marquee 30s linear infinite;
+    animation: marquee 60s linear infinite;
     color: white;
     font-size: 30px;
     user-select: none;
@@ -1024,6 +1024,14 @@ button:hover {
     font-size: 13px;
 }
 
+.reset-btn-container {
+    width: 100%;
+}
+
+.under-index-new-grids-btn3 {
+    width: 100%;
+}
+
 .sidebar-group-title {
     margin: 10px 0;
     background-color: rgba(0, 0, 0, 0.7);
@@ -1247,6 +1255,10 @@ button:hover {
     user-select: none;
 }
 
+.plus-minus:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 .cart-text-pricee {
     font-size: 20px;
     font-weight: bold;
@@ -1255,6 +1267,10 @@ button:hover {
 .minus-none {
     background-color: rgba(0, 0, 0, 0.1);
     cursor: default;
+}
+
+.minus-none:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .minus {
@@ -1283,7 +1299,7 @@ button:hover {
 .cart-summ-group {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    align-items: center;
 }
 
 .cart-summ-group2 {
@@ -1617,5 +1633,429 @@ button:hover {
 
 .footer-img {
     width: 200px;
+}
+
+/* карточка товара */
+.section-product-detail {
+    padding: 2rem 1rem;
+    width: 80%;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.product-detail-container {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+/* Блок с изображением */
+.product-gallery {
+    flex: 1;
+    position: relative;
+}
+
+.main-image img {
+    width: 80%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+
+/* Блок с информацией */
+.product-info {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.breadcrumbs {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+    color: #000;
+}
+
+.product-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0.5rem 0 1rem;
+    color: #222;
+}
+
+.product-brand-rating {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.brand {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.rating {
+    color: #ffc107;
+    font-size: 1.1rem;
+}
+
+.reviews-count {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 0.3rem;
+}
+
+/* Цена */
+.price-block {
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.current-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #e53935;
+}
+
+.old-price {
+    font-size: 1.2rem;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.discount-badge {
+    background: #e53935;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Выбор цвета и размера */
+.option-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #444;
+}
+
+.color-options {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+}
+
+.color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.color-option.active {
+    border-color: #000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.size-selector {
+    margin: 2rem 0;
+}
+
+.size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.size-guide-link {
+    font-size: 0.9rem;
+    color: #666;
+    text-decoration: none;
+}
+
+.size-guide-link:hover {
+    text-decoration: underline;
+}
+
+.size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.size-option {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    min-width: 44px;
+    text-align: center;
+}
+
+.size-option:hover {
+    border-color: #999;
+}
+
+.size-option.selected {
+    background: #000;
+    color: white;
+    border-color: #000;
+}
+
+.size-error {
+    color: #e53935;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    height: 1.2rem;
+}
+
+/* Кнопки действий */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.add-to-cart-btn, .wishlist-btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.add-to-cart-btn {
+    background: #000;
+    color: white;
+}
+
+.add-to-cart-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.add-to-cart-btn:not(:disabled):hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.wishlist-btn {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.wishlist-btn:hover {
+    background: #f9f9f9;
+    border-color: #999;
+}
+
+/* Информация о доставке */
+.delivery-info {
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.delivery-option {
+    display: flex;
+    gap: 1rem;
+    margin: 0.8rem 0;
+}
+
+.delivery-icon {
+    font-size: 1.2rem;
+}
+
+/* Дополнительная информация */
+.product-meta {
+    margin: 1.5rem 0;
+}
+
+.meta-item {
+    display: flex;
+    margin: 0.5rem 0;
+}
+
+.meta-title {
+    font-weight: 600;
+    min-width: 120px;
+    color: #666;
+}
+
+/* Табы с описанием и характеристиками */
+.product-tabs {
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    padding: 0.8rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 600;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    color: #000;
+    border-bottom-color: #000;
+}
+
+.tab-btn:hover:not(.active) {
+    color: #333;
+}
+
+.tab-content {
+    display: none;
+    padding: 1rem 0;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.specs-table td {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.specs-table td:first-child {
+    color: #666;
+    width: 40%;
+}
+
+/* Уведомление */
+.notification {
+    position: fixed;
+    bottom: -200px;
+    right: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 1000;
+    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 380px;
+}
+
+.notification.show {
+    bottom: 2rem;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem;
+    gap: 1rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    background: #e8f5e9;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.notification-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.view-cart-btn {
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    background: #000;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.view-cart-btn:hover {
+    background: #333;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .product-detail-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .notification {
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+    }
 }
 
