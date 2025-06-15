@@ -119,7 +119,7 @@
         <div class="tabs-header">
             <button class="tab-btn active js-tab-btn" data-tab="description">Описание</button>
             <button class="tab-btn js-tab-btn" data-tab="specs">Характеристики</button>
-            <button class="tab-btn js-tab-btn" data-tab="reviews">Отзывы</button>
+            <!--<button class="tab-btn js-tab-btn" data-tab="reviews">Отзывы</button> -->
         </div>
         <div class="tab-content active" id="description-content">
             <h3 class="product-disc">Описание товара</h3>
@@ -134,10 +134,10 @@
                 <tr><td>Страна производства</td><td>{{ product.countryy|default:"Китай" }}</td></tr>
             </table>
         </div>
-        <div class="tab-content" id="reviews-content">
+        <!--<div class="tab-content" id="reviews-content">
             <h3 class="product-disc">Отзывы</h3>
             <p>Здесь будут отображаться отзывы покупателей.</p>
-        </div>
+        </div>-->
     </div>
 </section>
 {% endblock %}

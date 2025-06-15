@@ -73,14 +73,25 @@
             <div class="cart-group cart-group2">
                 <h3 class="cart-title cart-title2">Оформление заказа</h3>
                 <div class="delivery-options-wrapper">
-                    <h4 class="delivery-title">Способ получения</h4>
-                    <div class="delivery-option" data-cost="0" data-method="pickup">
-                        <input type="radio" id="pickup" name="delivery_method" value="pickup" checked>
-                        <label for="pickup">
-                            <strong>Самовывоз</strong>
-                            <span>Бесплатно</span>
-                        </label>
-                    </div>
+                    <form>
+                        <h4 class="delivery-title">Способ получения</h4>
+                        <div class="delivery-option" data-cost="0" data-method="pickup">
+                            <input type="radio" id="pickup" name="delivery_method" value="pickup" checked>
+                            <label for="pickup">
+                                <strong>Самовывоз</strong>
+                                <span>Бесплатно</span>
+                            </label>
+                        </div>
+                    </form>
+                    <form>
+                        <h4 class="delivery-title">Способ оплаты</h4>
+                        <div class="delivery-option" data-cost="0" data-method="buy">
+                            <input type="radio" id="buy" name="delivery_method" value="buy" checked>
+                            <label for="buy">
+                                <strong>При получении</strong>
+                            </label>
+                        </div>
+                    </form>
                     <h4 class="delivery-title">Промокод</h4>
                     <form id="promocode-form" method="post" action="{% url 'catalog:apply_promocode' %}" class="search-form promo-form">
                         {% csrf_token %}

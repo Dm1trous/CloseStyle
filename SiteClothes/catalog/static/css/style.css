@@ -2638,9 +2638,6 @@ button:hover {
     }
 }
 
-/* АДАПТАЦИЯ */
-
-/* Стили для кнопки "бургера" */
 .mobile-menu-toggle {
     display: none;
     flex-direction: column;
@@ -2651,9 +2648,8 @@ button:hover {
     border: none;
     cursor: pointer;
     padding: 0;
-    /* ВАЖНО: Делаем z-index ВЫШЕ, чем у меню */
     z-index: 1113;
-    position: relative; /* Добавляем, чтобы z-index точно сработал */
+    position: relative;
 }
 
 .mobile-menu-toggle span {
@@ -2666,7 +2662,6 @@ button:hover {
     transform-origin: center;
 }
 
-/* Анимация превращения в крестик */
 .mobile-menu-toggle.active span:nth-child(1) {
     transform: translateY(8.5px) rotate(45deg);
 }
@@ -2682,7 +2677,6 @@ button:hover {
 
 
 .mobile-menu {
-    /* display: none; <-- УБИРАЕМ ЭТОТ СТИЛЬ */
     position: fixed;
     top: 0;
     left: 0;
@@ -2694,16 +2688,14 @@ button:hover {
     z-index: 1112;
     padding: 80px 20px 20px;
 
-    /* Скрываем меню, сдвигая его за пределы экрана */
     transform: translateX(-100%);
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    visibility: hidden; /* Скрываем его от кликов, когда оно за экраном */
+    visibility: hidden;
 }
 
 .mobile-menu.active {
-    /* Возвращаем меню на место */
     transform: translateX(0);
-    visibility: visible; /* Делаем видимым */
+    visibility: visible;
 }
 
 
@@ -2741,27 +2733,25 @@ button:hover {
 
     .mobile-menu-toggle {
         display: flex;
-        position: absolute; /* <-- Теперь позиция привязана к окну браузера */
+        position: absolute;
         left: 50px;
-        top: 25px; /* <-- Задаем точное положение от верха */
-        transform: none; /* <-- Убираем вертикальное центрирование */
+        top: 25px;
+        transform: none;
     }
 
 .index-div-logo {
     display: none;
 }
 
-/* Располагаем иконки по правому краю */
 .index-div-list {
-    justify-content: flex-end; /* Все элементы прижимаются вправо */
-    padding-right: 15px; /* Небольшой отступ справа */
+    justify-content: flex-end;
+    padding-right: 15px;
 }
 
-/* Убираем абсолютное позиционирование с блока иконок */
 .buy-profil {
     width: auto;
     gap: 15px;
-    margin: 0; /* Сбрасываем margin */
+    margin: 0;
 }
     .index-div-profil {
         width: 40px;
@@ -2785,48 +2775,41 @@ button:hover {
     }
 }
 
-/* 11. АДАПТАЦИЯ ГЛАВНОЙ СТРАНИЦЫ (index.html) */
 
-/* --- Адаптация для планшетов (до 992px) --- */
 @media (max-width: 992px) {
 
-    /* Уменьшаем отступы на странице */
     .content-width {
         width: 95%;
         margin: 60px auto;
     }
 
-    /* --- Информационные блоки --- */
     .index-info-grids {
-        /* Превращаем сетку в колонку */
-        grid-template-columns: 1fr; /* Один столбец */
-        grid-template-rows: auto; /* Высота автоматическая */
-        height: auto; /* Убираем фиксированную высоту */
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
         gap: 15px;
     }
 
-    /* Сбрасываем специфичные для десктопа правила */
     .index-info-grid-content1,
     .index-info-grid-content2,
     .index-info-grid-content3,
     .index-info-grid-content4 {
         grid-row: auto;
         grid-column: auto;
-        min-height: 400px; /* Задаем минимальную высоту для красоты */
-        background-size: cover; /* Картинка полностью покрывает блок */
-        background-position: center center !important; /* Центрируем фон */
-        display: flex; /* Используем flex для центрирования кнопки */
-        align-items: flex-end; /* Кнопка внизу */
+        min-height: 400px;
+        background-size: cover;
+        background-position: center center !important;
+        display: flex;
+        align-items: flex-end;
         padding: 30px;
     }
 
-    /* Скрываем текст в блоках, оставляем только кнопки */
     .index-info-grid-content-text {
         display: none;
     }
 
     .index-info-grid-btn-group {
-        justify-content: center; /* Центрируем кнопку */
+        justify-content: center;
         width: 100%;
         margin-top: 0;
     }
@@ -2837,74 +2820,68 @@ button:hover {
     }
 
     .index-info-grid-btn2 {
-        display: none; /* Скрываем вторую кнопку, так как текст скрыт */
+        display: none;
     }
 
-    /* --- Блок "Новинки" --- */
     .new-clothes {
         font-size: 36px;
         text-align: center;
     }
 
     .filter-group {
-        flex-direction: column; /* Фильтры и кнопка "Больше" встают в колонку */
+        flex-direction: column;
         gap: 20px;
     }
 
-    /* Сетка товаров "Новинки" - 2 в ряд */
     .index-new-grids {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
-        justify-items: center; /* Центрируем карточки */
+        justify-items: center;
     }
 
     .index-new-grid-content {
-        width: 100%; /* Карточка занимает всю ширину ячейки */
+        width: 90%;
         height: auto;
-        aspect-ratio: 3 / 4; /* Сохраняем пропорции, чтобы не было слишком вытянуто */
+        aspect-ratio: 3 / 4;
     }
 }
 
 
-/* --- Адаптация для мобильных телефонов (до 767px) --- */
 @media (max-width: 767px) {
     /* Слайдер */
     .strelka {
         font-size: 30px;
         width: 45px;
         height: 45px;
-        margin-bottom: 60px; /* Поднимаем стрелку повыше */
+        margin-bottom: 60px;
     }
 
 
-    @keyframes strelka { /* Адаптируем анимацию стрелки */
+    @keyframes strelka {
         0% { margin-bottom: 60px; }
         50% { margin-bottom: 70px; }
         100% { margin-bottom: 60px; }
     }
 
-    /* Бегущая строка */
     .under-slider-text {
         font-size: 22px;
     }
 
-    /* Фильтры новинок */
     .filter-block {
         gap: 10px;
         width: 100%;
-        justify-content: center; /* Растягиваем на всю ширину */
+        justify-content: center;
     }
 
     .filter-link, .filter-more {
         padding: 12px;
         font-size: 14px;
-        flex-grow: 1; /* Кнопки занимают равное пространство */
+        flex-grow: 1;
         text-align: center;
     }
 }
 
 
-/* --- Адаптация для очень маленьких экранов (до 480px) --- */
 @media (max-width: 480px) {
 
     /* Информационные блоки */
@@ -2912,41 +2889,45 @@ button:hover {
     .index-info-grid-content2,
     .index-info-grid-content3,
     .index-info-grid-content4 {
-        min-height: 300px; /* Делаем блоки еще компактнее */
+        min-height: 300px;
     }
 
-    /* Сетка товаров "Новинки" - 1 в ряд */
     .index-new-grids {
         grid-template-columns: 1fr;
     }
 
     .index-new-grid-content {
-        max-width: 320px; /* Ограничиваем ширину карточки, чтобы не была слишком большой */
+        max-width: 320px;
     }
 }
 
 @media (max-width: 992px) {
 
-    /* Делаем так, чтобы сам слайдер больше не занимал весь экран */
     .slider-container,
     .slide-image {
-        min-height: auto; /* Убираем min-height: 100vh с родителя */
-        height: 80vh; /* Например, 80% высоты экрана */
+        min-height: auto;
+        height: 80vh;
+    }
+        .index-info-grid-content3 {
+     display: none;
+}
+    .index-info-grid-content4 {
+     display: none;
+}
+    .filter-more {
+        display: none;
     }
 }
 
-/* --- Адаптация для телефонов в горизонтальной ориентации и маленьких планшетов --- */
+
 @media (max-width: 767px) {
     .slider-container,
     .slide-image {
-        height: 60vh; /* Делаем высоту еще меньше, чтобы точно все влезло */
+        height: 60vh;
     }
     .profile-card {
         width: 90%;
         margin: 0 auto;
-    }
-    .filter-more {
-        display: none;
     }
     .index-info-grid-content1 {
     background-position: -50px 0px !important;
@@ -2963,52 +2944,35 @@ button:hover {
 .index-info-grid-content1:hover {
     background-size: 140%;
 }
-
-    .index-info-grid-content3 {
-     display: none;
-}
-    .index-info-grid-content4 {
-     display: none;
-}
 }
 
-/* --- Адаптация для очень маленьких экранов --- */
 @media (max-width: 480px) {
     .slider-container,
     .slide-image {
-        height: 50vh; /* Половина высоты экрана */
+        height: 50vh;
     }
 }
 
-
-/* 14. АДАПТАЦИЯ КОРЗИНЫ (cart.html) */
-
-/* --- Планшеты и телефоны (до 992px) --- */
 @media (max-width: 992px) {
 
-    /* Основной контейнер перестраивается в одну колонку */
     .cart-big-group {
-        grid-template-columns: 1fr; /* Один столбец */
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    /* Блок с итогами теперь не привязан к высоте */
     .cart-group2 {
         height: auto;
-        /* Делаем его "липким" к низу экрана для удобства */
         bottom: 0;
         background: #fff;
         border-radius: 20px 20px 0 0;
-        margin: 0 -30px -40px -30px; /* Хитрость, чтобы он занял всю ширину родителя */
+        margin: 0 -30px -40px -30px;
         padding: 20px 30px;
     }
 }
 
 
-/* --- Мобильные телефоны (до 767px) --- */
 @media (max-width: 767px) {
 
-    /* Уменьшаем отступы для компактности */
     .section-cart {
         width: 100%;
         padding: 0 10px;
@@ -3021,18 +2985,16 @@ button:hover {
         padding: 15px;
     }
 
-    /* Главное изменение: перестраиваем карточку товара */
     .cart-grid {
-        display: flex; /* Вместо grid теперь flex */
-        flex-direction: column; /* Все элементы внутри встают в колонку */
+        display: flex;
+        flex-direction: column;
         gap: 15px;
         padding-bottom: 20px;
         border-bottom: 1px solid #eee;
         margin-bottom: 20px;
-        text-align: left; /* Сбрасываем центрирование */
+        text-align: left;
     }
 
-    /* Блок с количеством и ценой теперь в одной строке */
     .cart-grid > .item-quantity,
     .cart-grid > .cart-text-pricee {
         display: flex;
@@ -3041,33 +3003,28 @@ button:hover {
         width: 100%;
     }
 
-    /* Добавляем подпись к цене */
     .cart-grid > .cart-text-pricee::before {
         content: 'Сумма:';
         font-weight: normal;
         color: #666;
     }
 
-    /* Выравниваем количество по центру внутри своего блока */
     .item-quantity {
-        justify-content: flex-start; /* Прижимаем к левому краю */
+        justify-content: flex-start;
     }
 
-    /* Добавляем подпись к количеству */
      .item-quantity::before {
         content: 'Количество:';
         font-weight: normal;
         color: #666;
-        margin-right: auto; /* Отодвигает блок с кнопками вправо */
+        margin-right: auto;
     }
 
-    /* Уменьшаем картинку */
     .cart-img {
         width: 125px;
         height: 150px;
     }
 
-    /* Уменьшаем шрифты */
     .cart-text-title {
         font-size: 16px;
     }
@@ -3076,91 +3033,77 @@ button:hover {
     }
 }
 
-/* 15. АДАПТАЦИЯ НОВОСТЕЙ (news.html) */
-
-/* --- Планшеты и телефоны (до 767px) --- */
 @media (max-width: 767px) {
 
-    /* Основной контейнер новостей делаем чуть компактнее */
     .div-news-all {
         width: 95%;
     }
 
-    /* Главное изменение: перестраиваем блок новости */
     .div-news {
-        flex-direction: column; /* Вместо flex-row теперь flex-column */
-        margin: 30px 0; /* Уменьшаем отступы */
+        flex-direction: column;
+        margin: 30px 0;
     }
 
-    /* Картинка теперь занимает всю ширину */
     .news-img {
-        max-width: 100%; /* Убираем ограничение по ширине */
+        max-width: 100%;
         width: 100%;
-        border-radius: 10px 10px 0 0; /* Скругляем только верхние углы */
+        border-radius: 10px 10px 0 0;
     }
 
-    /* Блок с текстом теперь под картинкой */
     .news-title-text {
-        margin: 0; /* Убираем боковые отступы */
-        padding: 20px; /* Добавляем внутренние отступы */
+        margin: 0;
+        padding: 20px;
     }
 
     .news-title {
         margin-top: 0;
-        font-size: 24px; /* Немного уменьшаем заголовок */
+        font-size: 24px;
     }
 
     .news-text {
         font-size: 16px;
-        padding-bottom: 20px; /* Уменьшаем нижний отступ */
+        padding-bottom: 20px;
     }
 
-    /* Позиционирование кнопки */
     .div-btn-news {
-        position: static; /* Убираем абсолютное позиционирование */
+        position: static;
         margin-top: 20px;
         margin-bottom: 0;
     }
 
     .news-catalog-btn {
-        width: 100%; /* Кнопка на всю ширину */
+        width: 100%;
     }
 }
 
-/* 16. АДАПТАЦИЯ КОНТАКТОВ (contacts.html) */
 
-/* --- Планшеты (до 992px) --- */
 @media (max-width: 992px) {
     .contacts-container {
         max-width: 90%;
     }
 
-    /* Главная сетка: блоки встают друг под друга */
+
     .contacts-content {
-        grid-template-columns: 1fr; /* Одна колонка */
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    /* Карта и адрес: блоки встают друг под друга */
     .map-content {
-        grid-template-columns: 1fr; /* Одна колонка */
+        grid-template-columns: 1fr;
     }
 
-    /* Задаем фиксированную высоту для блока с картой, чтобы он не был слишком большим */
     .map-content > div:last-child {
         min-height: 400px;
     }
 }
 
 
-/* --- Мобильные телефоны (до 767px) --- */
 @media (max-width: 767px) {
     .contacts-container {
         max-width: 100%;
         padding: 0 15px;
     }
 
-    /* Уменьшаем шрифты заголовков */
     .contacts-header h1 {
         font-size: 36px;
     }
@@ -3174,7 +3117,6 @@ button:hover {
         font-size: 16px;
     }
 
-    /* Уменьшаем отступы у блоков */
     .contacts-header {
         margin-bottom: 40px;
     }
@@ -3184,26 +3126,23 @@ button:hover {
         margin-bottom: 60px;
     }
 
-    /* Делаем карточки контактов чуть компактнее */
     .company-info,
     .contact-card,
     .address-info {
         padding: 30px;
     }
 
-    /* Уменьшаем иконки в карточках контактов */
     .contact-icon {
         width: 50px;
         height: 50px;
         font-size: 20px;
     }
 
-    /* Уменьшаем цифры в статистике */
+
     .stat-number {
         font-size: 28px;
     }
 
-    /* Уменьшаем текст и отступы в FAQ */
     .faq-question {
         font-size: 16px;
         padding: 15px;
@@ -3211,5 +3150,63 @@ button:hover {
     .faq-answer-content {
         padding: 0 15px 15px;
         font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .catalog-carts {
+        margin-top: 0px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .catalog-carts {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .catalog-carts-one {
+        grid-column: 1 / -1;
+    }
+    .sidebar-group-content2,
+    .sidebar-group-content3 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .range-price-input {
+        width: 80px;
+    }
+    .under-index-new-grids-btn {
+        padding: 10px 0;
+    }
+    .pagination-group {
+        grid-column: 1 / -1;
+    }
+    .sidebar {
+        padding: 0;
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .catalog-carts {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .catalog-carts-one {
+        grid-column: 1 / -1;
+    }
+    .sidebar-group-content2,
+    .sidebar-group-content3 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .range-price-input {
+        width: 80px;
+    }
+    .under-index-new-grids-btn {
+        padding: 10px 0;
+    }
+    .pagination-group {
+        grid-column: 1 / -1;
     }
 }

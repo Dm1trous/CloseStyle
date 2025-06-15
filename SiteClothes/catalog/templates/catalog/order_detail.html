@@ -22,6 +22,7 @@
             <h3 class="cart-title">Состав заказа</h3>
             <p class="cart-count cart-count4">Статус: {{ order.get_status_display }}</p>
             <p class="cart-count cart-count4">Способ получения: Самовывоз</p>
+            <p class="cart-count cart-count4">Способ оплаты: При получении</p>
 
             {% for item in order_items %}
             <div class="cart-grid">
